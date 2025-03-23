@@ -121,27 +121,49 @@ If you want to set up project locally
    conda create --name your-environment-name python=3.10
    ```
 
-   Alternatively use any other virtual enviroment manager of your choice.
+   if use _venv_
+   
+   For Linux/macOS:  
+   ```bash
+   python3 -m venv your-environment-name
+   ```
+   For Windows:  
+   ```powershell
+   python -m venv your-environment-name
+   ```
 
-2. Activate environment
+3. Activate environment
 
    ```
    conda activate your-environment-name
    ```
 
-3. Make sure you use recent _pip_ version
+   For Linux/macOS:  
+   ```bash
+   source your-environment-name/bin/activate
+   ```
+   For Windows (Command Prompt):  
+   ```cmd
+   your-environment-name\Scripts\activate
+   ```
+   For Windows (PowerShell):  
+   ```powershell
+   your-environment-name\Scripts\Activate.ps1
+   ```
+
+4. Make sure you use recent _pip_ version
 
    ```
    python -m pip install --upgrade pip
    ```
 
-4. Install packages
+5. Install packages
 
    ```
    python -m pip install -e .
    ```
 
-5. create `.env` file and fill it according to template below
+6. create `.env` file and fill it according to template below
 
    ```
    OPENAI_API_KEY="<your_openai_api_key>"

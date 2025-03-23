@@ -10,6 +10,7 @@ from repo_rag.components.prompts import (
 
 
 async def format_docs(docs):
+    """Format context and sources for LLM"""
     content = '\n\n\n'.join([d.page_content for d in docs])
 
     sources = '\n\n\n'.join({f'{doc.metadata["file_name"]} - {doc.metadata["full_url"]}' for doc in docs})
@@ -53,6 +54,7 @@ def format_prompt(query, history=None, retrieved_context='', retrieved_sources='
 
 
 async def clear_memory(graph: CompiledStateGraph, thread_id: str) -> None:
+    """Clear memory of the graph"""
     config = {'configurable': {'thread_id': thread_id}}
 
     try:
@@ -65,6 +67,7 @@ async def clear_memory(graph: CompiledStateGraph, thread_id: str) -> None:
 
 
 async def run_graph(graph: CompiledStateGraph, query, thread_id: str):
+    """Compile and invoke graph"""
     config = {'configurable': {'thread_id': thread_id}}
 
     final_state = await graph.ainvoke(

@@ -12,6 +12,14 @@ logger = logging.getLogger(__name__)
 
 
 class Loader:
+    """
+    A component for fetching and processing files from a GitHub repository.
+
+    This class interacts with the GitHub API to retrieve files while filtering out
+    unsupported file types. It supports loading raw file content and splitting
+    documents into smaller chunks for further processing.
+    """
+
     GITHUB_API = 'https://api.github.com/repos/'
     token = os.getenv('GITHUB_TOKEN')
 

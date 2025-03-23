@@ -4,7 +4,7 @@ import streamlit as st
 
 from repo_rag.graph.graph import create_workflow
 from repo_rag.graph.utils import run_graph
-from repo_rag.frontend.utils import add_to_vector_store, show_progress
+from repo_rag.frontend.utils import add_to_vector_store
 
 
 def ui():
@@ -24,10 +24,8 @@ def ui():
 
         if repo_url:
             if st.button('Add Repository to Vector Database'):
-                st.write('Processing repository, adding documents to vector store...')
                 add_to_vector_store(repo_url)
                 st.write(f'Repository {repo_url} has been successfully added to the vector store!')
-                show_progress()
 
         if st.button('Go to Chatbot'):
             st.session_state['go_to_chatbot'] = True
@@ -53,7 +51,3 @@ def ui():
                 st.markdown(f'**User:** {message["content"]}')
             elif message['role'] == 'chat':
                 st.markdown(f'**Repo Rag Assistant:** {message["content"]}')
-
-    if 'vectorstore_created' in st.session_state and st.session_state['vectorstore_created']:
-        st.session_state['go_to_chatbot'] = True
-        st.rerun()

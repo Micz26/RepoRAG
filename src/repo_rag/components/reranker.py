@@ -7,6 +7,19 @@ from langchain_core.documents import Document
 
 
 class Reranker:
+    """
+    A component for reranking retrieved documents based on relevance to a given query.
+
+    Supports two reranking models:
+    - Listwise ranking using a transformer-based approach.
+    - Cross-encoder ranking for pairwise relevance scoring.
+
+    Methods:
+        - rerank: Selects the reranking model and applies it to a list of documents.
+        - listwise_rerank: Ranks documents using a listwise approach.
+        - cross_encoder_rerank: Ranks documents using a cross-encoder model.
+    """
+
     @staticmethod
     def rerank(model: Literal['listwise', 'cross-encoder'], query: str, documents: list[Document]) -> list[Document]:
         """

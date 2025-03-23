@@ -19,7 +19,7 @@ This repository implements a Retrieval-Augmented Generation (RAG) system designe
 
 ### Indexing
 
-The system begins with indexing, where the user provides a GitHub repository URL. The `scripts/build_index.py` script handles the indexing process. I split the code using `\n` as a delimiter, creating chunks of 1024 tokens with an overlap of 64 tokens. This approach avoids excessively large chunks, which are generally rated poorly by similarity metrics (L2 distance in my case), while maintaining structure. Moreover, it's usually not necessary to retrieve entire files—just relevant parts suffice. The choice of `\n` as the delimiter helps keep the chunks focused on actual code blocks.
+The system begins with indexing, where the user provides a GitHub repository URL. The `scripts/build_index.py` script handles the indexing process. I split the code using `\n` as a delimiter, creating chunks of 1024 tokens with an overlap of 64 tokens. This approach avoids excessively large chunks, which are generally rated poorly by similarity metrics (L2 distance in my case), while maintaining structure. Moreover, it's usually not necessary to retrieve entire file - just relevant parts are enough. The choice of `\n` as the delimiter helps keep the chunks focused on actual code blocks.
 
 ### Approaches Used
 
@@ -74,7 +74,7 @@ The evaluation highlights the trade-offs between retrieval quality (**Recall@10*
 
 ### ReAct Agent System and Streamlit Interface
 
-In addition to the retrieval system, I implemented a ReAct agent system, utilizing the best-performing model (Query Extraction). This agent can, for example, generate summaries of the retrieved code snippets while also providing links to the corresponding files on GitHub. It first determines whether the user's query is related to the repository's code; if so, it retrieves relevant data and uses it in the response, avoiding redundant retrieval.
+In addition to the retrieval system, I implemented a ReAct agent system, utilizing the best-performing model (Query Extraction). This agent can, for example, generate summaries of the retrieved code snippets while also providing links to the corresponding files on GitHub. It first determines whether the user's query is related to the repository's code; if so, it retrieves relevant data and uses it in the response, avoiding redundant retrieval. The cagent also features memory, enabling it to retain context across interactions
 
 I also built a simple web chatbot interface using Streamlit. The app allows users to load code from a GitHub repository into a database and interact with agent.
 

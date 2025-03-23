@@ -26,7 +26,7 @@ The system begins with indexing, where the user provides a GitHub repository URL
 - **Baseline**: simple similarity search without any enhancements
 - **MMR (Maximal Marginal Relevance)**: used to improve the diversity of retrieved results by balancing relevance and novelty. This technique aims to select the most relevant documents while avoiding redundancy in the results.
 - **Query Expansion**: using a language model (LLM), the query is expanded to provide additional context. This helps to improve the understanding of the user's intent, leading to more relevant retrieval results.
-- **Query Extraction**: another LLM-based approach, Query Extraction focuses on extracting key terms or concepts from the query and then adding these terms to base query.
+- **Query Extraction**: using few-shot prompting, another LLM-based approach, Query Extraction, focuses on extracting key terms from the query and then adding these terms to initial query.
 - **Rerankers**:
   - **CrossEncoder Reranker**: CrossEncoder model evaluates the relationship between the query and the documents by scoring each document-query pair. I utilized the [MS MARCO MiniLM-L6-v2 model](https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2) for this approach, which allows for a more precise ranking of the retrieved documents.
   - **Listwise Reranker**: a model trained to rank multiple documents as a list rather than individually. I used [ListConRanker](https://huggingface.co/ByteDance/ListConRanker) for this approach, which ranks the documents based on their relevance to the query, considering the entire list of retrieved results.
@@ -39,7 +39,7 @@ In the context of my retrieval system, since the system can return multiple chun
 
 ### Models Evaluation
 
-After indexing, I tested multiple models to evaluate their performance in retrieving relevant code snippets from test dataIt's important to highlight that the results may not be fully reliable depending on whether the test data is representative. Below are the results for the models I implemented:
+I tested multiple models to evaluate their performance in retrieving relevant code snippets from test dataIt's important to highlight that the results may not be fully reliable depending on whether the test data is representative. Below are the results for the models I implemented:
 
 | Model                                 | Recall@10 | Mean Latency (seconds) |
 | ------------------------------------- | --------- | ---------------------- |
@@ -76,7 +76,7 @@ The evaluation highlights the trade-offs between retrieval quality (**Recall@10*
 
 In addition to the retrieval system, I implemented a ReAct agent system, utilizing the best-performing model (Query Extraction). This agent can, for example, generate summaries of the retrieved code snippets while also providing links to the corresponding files on GitHub. It first determines whether the user's query is related to the repository's code; if so, it retrieves relevant data and uses it in the response, avoiding redundant retrieval.
 
-I also built a simple web interface using Streamlit. The app allows users to load code from a GitHub repository into a database and interact with a chatbot. The chatbot talk about retrieved code snippets.
+I also built a simple web chatbot interface using Streamlit. The app allows users to load code from a GitHub repository into a database and interact with agent.
 
 <p align="center">
   <img src="assets/image1.png" width="400"/>

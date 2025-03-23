@@ -15,7 +15,7 @@
 
 ## Description
 
-This repository implements a Retrieval-Augmented Generation (RAG) system designed for working with GitHub code repositories. The system provides a comprehensive pipeline for indexing and querying code, allowing to retrieve and interact with relevant parts of a repository using natural language.
+This repository implements a Retrieval-Augmented Generation (RAG) system designed for working with GitHub code repositories. The system provides pipeline for indexing and querying code, allowing to retrieve and interact with relevant parts of code using natural language.
 
 ### Indexing
 

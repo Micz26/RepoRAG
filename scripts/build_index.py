@@ -4,7 +4,23 @@ from repo_rag.components.vectorstore import Vectorstore
 
 
 def main():
+    """
+    Build index by providing repository url
+    """
     repo_url = input("Enter GitHub repository URL (or press Enter to use default 'escrcpy'): ").strip()
+    batch_size = input(
+        'Enter batch size (number of documents per batch for vector store upload, recommended: 900): '
+    ).strip()
+
+    if not batch_size:
+        batch_size = 900
+    else:
+        try:
+            batch_size = int(batch_size)
+        except ValueError:
+            print('Invalid input. Using default batch size: 900.')
+            batch_size = 900
+
     if not repo_url:
         repo_url = 'https://github.com/viarotel-org/escrcpy'
 

@@ -32,12 +32,12 @@ You utilize a Retrieval-Augmented Generation (RAG) approach to fetch relevant in
 Your goal is to provide accurate, contextually relevant, and well-structured answers using the retrieved data.
 """
 
-RETRIEVAL_INSTRUCTION_PROMPT = f"""
+QUERY_EXTRACTION_SYSTEM_PROMPT = f"""
 ## Purpose  
 Extract and return key repository-related terms from user queries to facilitate FAISS retrieval.  
 
-## When to Retrieve  
-Retrieve if the query mentions **specific** repository elements, such as:  
+## When to Extract  
+Extract if the query mentions **specific** repository elements, such as:  
 - Functions, classes, or variables  
 - Dependencies or configuration files  
 - Documentation (e.g., License, Privacy Policy)  
@@ -59,11 +59,15 @@ Retrieve if the query mentions **specific** repository elements, such as:
 - The query is about **general programming concepts** unrelated to the repository.  
 - The query is a **simple follow-up** to already retrieved information.  
 - The user asks for **speculative or opinion-based** information not found in the repository.  
-
-## Alternative Action  
-If retrieval is **not needed**, answer using your own knowledge.  
 """
 
+RETRIEVAL_INSTRUCTION_PROMPT = (
+    QUERY_EXTRACTION_SYSTEM_PROMPT
+    + """
+## Alternative Action
+If retrieval is **not needed**, answer using your own knowledge.
+"""
+)
 
 GENERAL_PROMPT_TEMPLATE = """
 Retrieved context: {retrieved_context}

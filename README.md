@@ -122,48 +122,56 @@ If you want to set up project locally
    ```
 
    if use _venv_
-   
-   For Linux/macOS:  
+
+   For Linux/macOS:
+
    ```bash
    python3 -m venv your-environment-name
    ```
-   For Windows:  
+
+   For Windows:
+
    ```powershell
    python -m venv your-environment-name
    ```
 
-3. Activate environment
+2. Activate environment
 
    ```
    conda activate your-environment-name
    ```
 
-   For Linux/macOS:  
+   For Linux/macOS:
+
    ```bash
    source your-environment-name/bin/activate
    ```
-   For Windows (Command Prompt):  
+
+   For Windows (Command Prompt):
+
    ```cmd
    your-environment-name\Scripts\activate
    ```
-   For Windows (PowerShell):  
+
+   For Windows (PowerShell):
+
    ```powershell
    your-environment-name\Scripts\Activate.ps1
    ```
 
-4. Make sure you use recent _pip_ version
+3. Make sure you use recent _pip_ version
 
    ```
    python -m pip install --upgrade pip
    ```
 
-5. Install packages
+4. Install packages
 
    ```
    python -m pip install -e .
    ```
 
-6. create `.env` file and fill it according to template below
+5. create `.env` file and fill it according to template below
 
    ```
    OPENAI_API_KEY="<your_openai_api_key>"
@@ -174,7 +182,9 @@ If you want to set up project locally
 
 **BEFORE RUNNING EVALUATION SCRIPTS PUT JSON WITH EVAUATION QUESTIONS IN `data/` FOLDER**
 
-1. Build Index
+1. **Build Index**  
+   **Side Note:**  
+   The process of adding loaded documents is batched to avoid OpenAI rate limiting issues (for 1 tier), with documents being added in batches of `batch_size`. If the number of documents exceeds the batch size, the function waits for 1 minute before continuing. The `batch_size` can be adjusted by the user when running the script.
 
    ```
    python scripts/build_index.py
@@ -198,7 +208,7 @@ If you want to set up project locally
    ```
 6. Evaluate key terms extraction
    ```
-   python scripts/augmented_query.py
+   python scripts/query_extraction.py
    ```
 
 After these steps project scripts are ready to launch

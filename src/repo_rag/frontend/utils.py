@@ -11,7 +11,15 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def add_to_vector_store(repo_url):
+def add_to_vector_store(repo_url: str) -> None:
+    """
+    Utility function for uploading repository files to vectorstore
+
+    Parameters
+    ----------
+    repo_url : str
+        repository url
+    """
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1024, chunk_overlap=64, separators=['\n', ' ', ''])
 
     documents = Loader.load_and_split(repo_url, text_splitter)

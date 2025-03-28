@@ -16,13 +16,22 @@ logger = logging.getLogger(__name__)
 
 
 class Vectorstore:
+    """Vectorstore class"""
+
     embeddings = openai_embeddings
 
     def __init__(self, version: int = 0):
         self.vectorstore_path = VECTORSTORE_PATH + f'_v{version}'
 
     def create(self) -> FAISS:
-        """Creates a new vectorstore if it does not exist."""
+        """
+        Creates a new vectorstore if it does not exist.
+
+        Returns
+        -------
+        FAISS
+            FAISS vectorstore
+        """
         vectorstore_path = Path(self.vectorstore_path)
         if vectorstore_path.exists():
             return self.load()
@@ -45,6 +54,13 @@ class Vectorstore:
         """
         Adds documents in batches of batch_size to avoid rate limiting issues.
         If there are more than batch_size documents, the function waits 1 minute before continuing.
+
+        Parameters
+        ----------
+        docs : list[Document]
+            list of documents to be uploaded
+        batch_size : int
+            batch size
         """
         try:
             vectorstore = self.load()
@@ -66,7 +82,19 @@ class Vectorstore:
                 time.sleep(60)
 
     def load(self) -> FAISS:
-        """Loads an existing vectorstore, or raises an error if not found."""
+        """
+        Loads an existing vectorstore, or raises an error if not found.
+
+        Returns
+        -------
+        FAISS
+            loaded FAISS vectorstore
+
+        Raises
+        ------
+        FileNotFoundError
+            if vectorstore was not found
+        """
         vectorstore_path = Path(self.vectorstore_path)
         if not vectorstore_path.exists():
             raise FileNotFoundError("Vectorstore not found. Create it using 'Vectorstore.create()'.")

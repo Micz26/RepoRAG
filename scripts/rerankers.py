@@ -19,13 +19,20 @@ def recall_at_k(
     """
     Computes Recall@K for the given retriever.
 
-    Args:
-        retriever: The retriever object used for retrieving documents.
-        reranker_model: The rereanker used for reranking
-        queries: List of queries with expected relevant file names.
-        k: The number of unique filenames to consider. Defaults to 10.
+    Parameters
+    ----------
+    retriever : BaseRetriever
+        The retriever object used for retrieving documents.
+    reranker_model: Literal['listwise', 'cross-encoder']
+        The rereanker used for reranking
+    queries : list of dict[str, list[str]]
+        A list of queries, where each query contains a 'question' (str) and a list of relevant file names.
+    k : int, optional
+        The number of unique filenames to consider, by default 10.
 
-    Returns:
+    Returns
+    -------
+    float
         The average Recall@K score across all queries.
     """
     recalls = []

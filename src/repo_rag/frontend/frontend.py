@@ -8,6 +8,9 @@ from repo_rag.frontend.utils import add_to_vector_store
 
 
 def ui():
+    """
+    GUI main function
+    """
     st.title('Repo Rag Assistant')
 
     if 'repo_url' not in st.session_state:

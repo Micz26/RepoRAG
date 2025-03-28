@@ -1,16 +1,30 @@
 from langchain_core.messages import BaseMessage, RemoveMessage
 from langchain_core.prompts import ChatPromptTemplate, HumanMessagePromptTemplate, SystemMessagePromptTemplate
 from langgraph.graph.state import CompiledStateGraph
+from langchain_core.documents import Document
 
 from repo_rag.components.prompts import (
     GENERAL_PROMPT_TEMPLATE,
     RETRIEVAL_INSTRUCTION_PROMPT,
     SYSTEM_PROMPT,
 )
+from repo_rag.graph.state import RepoConvoState
 
 
-async def format_docs(docs):
-    """Format context and sources for LLM"""
+async def format_docs(docs: list[Document]) -> tuple[str]:
+    """
+    Format context and sources for LLM
+
+    Parameters
+    ----------
+    docs : list[Document]
+        Retrieved docuemnts
+
+    Returns
+    -------
+    tuple[str]
+        Retreieved context as str and sources as str
+    """
     content = '\n\n\n'.join([d.page_content for d in docs])
 
     sources = '\n\n\n'.join({f'{doc.metadata["file_name"]} - {doc.metadata["full_url"]}' for doc in docs})
@@ -23,9 +37,25 @@ def print_messages(messages):
         print(message.pretty_print())
 
 
-def format_prompt(query, history=None, retrieved_context='', retrieved_sources=''):
+def format_prompt(query, history=None, retrieved_context: str = '', retrieved_sources: str = ''):
     """
-    Returns FORMATTED messages (not a template) using the inputs.
+    Returns formatted messages (not a template) using the inputs.
+
+    Parameters
+    ----------
+    query : BaseMessage
+        User's query message.
+    history : list of BaseMessage, optional
+        Conversation history, by default None.
+    retrieved_context : str, optional
+        Retrieved context from repository vectorstore, by default ''.
+    retrieved_sources : str, optional
+        Sources of the retrieved context, by default ''.
+
+    Returns
+    -------
+    list of BaseMessage
+        A list of formatted chat messages.
     """
     if history is None:
         history = [BaseMessage(content='')]
@@ -38,7 +68,9 @@ def format_prompt(query, history=None, retrieved_context='', retrieved_sources='
     messages = []
 
     if retrieved_context.strip():
-        messages.append(SystemMessagePromptTemplate.from_template(SYSTEM_PROMPT))
+        messages.append(
+            SystemMessagePromptTemplate.from_template(SYSTEM_PROMPT)
+        )  # Dont include RETRIEVAL_INSTRUCTION_PROMPT again if
     else:
         messages.append(SystemMessagePromptTemplate.from_template(SYSTEM_PROMPT + '\n' + RETRIEVAL_INSTRUCTION_PROMPT))
 
@@ -54,7 +86,21 @@ def format_prompt(query, history=None, retrieved_context='', retrieved_sources='
 
 
 async def clear_memory(graph: CompiledStateGraph, thread_id: str) -> None:
-    """Clear memory of the graph"""
+    """
+    Clear memory of the graph
+
+    Parameters
+    ----------
+    graph : CompiledStateGraph
+        complied graph
+    thread_id : str
+        thread_id for checkpointer
+
+    Raises
+    ------
+    RuntimeError
+        RuntimeError
+    """
     config = {'configurable': {'thread_id': thread_id}}
 
     try:
@@ -66,8 +112,24 @@ async def clear_memory(graph: CompiledStateGraph, thread_id: str) -> None:
         raise RuntimeError('Error occurred while clearing graph memory') from e
 
 
-async def run_graph(graph: CompiledStateGraph, query, thread_id: str):
-    """Compile and invoke graph"""
+async def run_graph(graph: CompiledStateGraph, query: str, thread_id: str) -> RepoConvoState:
+    """
+    Compile and invoke graph
+
+    Parameters
+    ----------
+    graph : CompiledStateGraph
+        complied graph
+    query : str
+        query
+    thread_id : str
+        thread_id for checkpointer
+
+    Returns
+    -------
+    RepoConvoState
+        Final state of conversation
+    """
     config = {'configurable': {'thread_id': thread_id}}
 
     final_state = await graph.ainvoke(

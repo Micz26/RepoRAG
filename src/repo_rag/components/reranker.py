@@ -25,13 +25,23 @@ class Reranker:
         """
         Reranks the documents based on the specified model.
 
-        args:
-            model (Literal['listwise', 'cross-encoder']): The name of the model ('listwise' or 'cross-encoder')
-            query (str): The user query
-            documents (list[Document]): List of documents to evaluate
+        ----------
+        model : Literal[&#39;listwise&#39;, &#39;cross
+            The name of the model ('listwise' or 'cross-encoder')
+        query : str
+            The user query
+        documents : list[Document]
+            List of documents to evaluate
 
-        returns:
-            sorted_documents (list[Document]): Sorted list of documents based on relevance with their respective scores
+        Returns
+        -------
+        list[Document]
+            Sorted list of documents based on relevance with their respective scores
+
+        Raises
+        ------
+        ValueError
+            _description_
         """
         if model == 'listwise':
             return Reranker.listwise_rerank(query, documents)
@@ -45,12 +55,17 @@ class Reranker:
         """
         Reranks documents using the Listwise model.
 
-        args:
-            query (str): The user query
-            documents (list[Document]): List of documents
+        Parameters
+        ----------
+        query : str
+            The user query
+        documents : list[Document]
+            List of documents
 
-        returns:
-            sorted_documents (list[Document]): Sorted list of documents based on similarity with their respective scores
+        Returns
+        -------
+        list[Document]
+            Sorted list of documents based on similarity with their respective scores
         """
         model_name = 'ByteDance/ListConRanker'
         tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -82,12 +97,17 @@ class Reranker:
         """
         Reranks documents using the Cross-Encoder model.
 
-        args:
-            query (str): The user query
-            documents (list[Document]): List of documents
+        Parameters
+        ----------
+        query : str
+            The user query
+        documents : list[Document]
+            List of documents
 
-        returns:
-            sorted_documents (list[Document]): Sorted list of documents based on the model's scores with their respective scores
+        Returns
+        -------
+        list[Document]
+            Sorted list of documents based on the model's scores with their respective scores
         """
         model = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
         scores = model.predict([(query, doc.page_content) for doc in documents])

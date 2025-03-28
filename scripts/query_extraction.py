@@ -6,7 +6,7 @@ from langchain.schema.retriever import BaseRetriever
 
 from repo_rag.components.vectorstore import Vectorstore
 from repo_rag.components.constants import EVAL_DATA_PATH
-from repo_rag.components.chains import augment_query_chain
+from repo_rag.components.chains import query_extraction_chain
 
 
 def recall_at_k(
@@ -17,12 +17,18 @@ def recall_at_k(
     """
     Computes Recall@K for the given retriever.
 
-    Args:
-        retriever: The retriever object used for retrieving documents.
-        queries: List of queries with expected relevant file names.
-        k: The number of unique filenames to consider. Defaults to 10.
+    Parameters
+    ----------
+    retriever : BaseRetriever
+        The retriever object used for retrieving documents.
+    queries : list of dict[str, list[str]]
+        A list of queries, where each query contains a 'question' (str) and a list of relevant file names.
+    k : int, optional
+        The number of unique filenames to consider, by default 10.
 
-    Returns:
+    Returns
+    -------
+    float
         The average Recall@K score across all queries.
     """
     recalls = []
@@ -31,7 +37,7 @@ def recall_at_k(
         question = query['question']
         relevant_files = set(query['files'])
 
-        response = augment_query_chain.invoke(question)
+        response = query_extraction_chain.invoke(question)
         if 'CALLED_RETRIEVER' in response.content:
             response.content = response.content.replace('CALLED_RETRIEVER', '')
             response = question + response.content

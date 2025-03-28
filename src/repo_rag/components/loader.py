@@ -62,20 +62,29 @@ class Loader:
     }
 
     @staticmethod
-    def _get_repo_files(repo_url, token=None):
-        """
-        Fetches files from a repository, filtering out ignored file types.
-        """
+    def _get_repo_files(repo_url: str, token: str | None = None):
+        """Fetches files from a repository, filtering out ignored file types.
 
+        Parameters
+        ----------
+        repo_url : str
+            URL of the GitHub repository.
+        token : str | None, optional
+            GitHub authentication token, by default None.
+
+        Returns
+        -------
+        list of tuple
+            List of tuples containing (file_name, download_url, full_file_url, repo_url).
+        """
         repo_name = repo_url.rstrip('/').split('github.com/')[-1]
         api_url = f'{Loader.GITHUB_API}{repo_name}/contents/'
 
-        def fetch_files(url, path=''):
+        def fetch_files(url: str, path: str = ''):
             """
             Helper function to recursively fetch files from the repository.
             """
-
-            headers = {'Authorization': f'token {token or Loader.token}' if token or Loader.token else None}
+            headers = {'Authorization': f'token {token or Loader.token}'} if token or Loader.token else {}
 
             response = requests.get(url, headers=headers)
             if response.status_code != 200:
@@ -100,24 +109,46 @@ class Loader:
         return fetch_files(api_url)
 
     @staticmethod
-    def _get_file_content(file_url, token=None):
+    def _get_file_content(file_url: str, token: str | None = None):
+        """Fetches the content of a single file, including the token in the header (if provided).
+
+        Parameters
+        ----------
+        file_url : str
+            URL of the file to fetch.
+        token : str | None, optional
+            GitHub authentication token, by default None.
+
+        Returns
+        -------
+        str | None
+            Content of the file as a string, or None if an error occurs.
         """
-        Fetches the content of a single file, including the token in the header (if provided).
-        """
-        headers = {}
-        if token:
-            headers['Authorization'] = f'token {token}'
+        headers = {'Authorization': f'token {token or Loader.token}'} if token or Loader.token else {}
 
         response = requests.get(file_url, headers=headers)
         if response.status_code == 200:
             return response.text
+
         logger.error(f'Error fetching file content: {file_url} | Status: {response.status_code}')
         return None
 
     @staticmethod
-    def load(repo_url, token=None):
+    def load(repo_url: str, token: str | None = None):
         """
         Loads files from the repository and returns them as documents.
+
+        Parameters
+        ----------
+        repo_url : str
+            URL of the GitHub repository.
+        token : str | None, optional
+            GitHub authentication token, by default None.
+
+        Returns
+        -------
+        list of Document
+            List of Document objects representing the loaded files.
         """
         file_docs = []
         files = Loader._get_repo_files(repo_url, token)
@@ -132,9 +163,22 @@ class Loader:
         return file_docs
 
     @staticmethod
-    def load_and_split(repo_url, splitter: TextSplitter, token=None):
-        """
-        Loads files from the repository, splits them into chunks, and returns them as documents.
+    def load_and_split(repo_url: str, splitter: TextSplitter, token: str | None = None):
+        """Loads files from the repository, splits them into chunks, and returns them as documents.
+
+        Parameters
+        ----------
+        repo_url : str
+            URL of the GitHub repository.
+        splitter : TextSplitter
+            TextSplitter instance used to divide documents into smaller chunks.
+        token : str | None, optional
+            GitHub authentication token, by default None.
+
+        Returns
+        -------
+        list of Document
+            List of split Document objects.
         """
         file_docs = []
         files = Loader._get_repo_files(repo_url, token)

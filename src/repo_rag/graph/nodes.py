@@ -14,6 +14,14 @@ logger = logging.getLogger(__name__)
 
 
 async def chatbot(state: RepoConvoState):
+    """
+    Invokes LLM.
+
+    Parameters
+    ----------
+    state : RepoConvoState
+        The current workflow state.
+    """
     query = state['messages'][-1]
     prompt = format_prompt(query=query, history=state['messages'][:-1])
     response = await chat_llm.ainvoke(prompt)
@@ -34,11 +42,10 @@ async def route_retriever(state: RepoConvoState):
     """
     Decides whether to retrieve docs, or proceed to END
 
-    Parameters:
-        state (RepoConvoState): The current workflow state.
-
-    Returns:
-        str (str): The next step in the workflow.
+    Parameters
+    ----------
+    state : RepoConvoState
+        The current workflow state.
     """
     should_retrieve = state['should_retrieve']
     if should_retrieve:
@@ -51,11 +58,10 @@ async def retrieve_data(state: RepoConvoState):
     """
     Retrieves repo documents relevant to the given research question from the vector database.
 
-    Parameters:
-        state (RepoConvoState): The current workflow state.
-
-    Returns:
-        RepoConvoState: Updated state with retrieved repo documents.
+    Parameters
+    ----------
+    state : RepoConvoState
+        The current workflow state.
     """
     question = state['messages'][-1].content
 
@@ -65,14 +71,13 @@ async def retrieve_data(state: RepoConvoState):
 
 
 async def fill_template(state: RepoConvoState):
-    """
+    """_summary_
     Formats the retrieved data into a structured AI prompt.
 
-    Parameters:
-        state (RepoConvoState): The current workflow state.
-
-    Returns:
-        RepoConvoState: Updated state with a formatted AI prompt.
+    Parameters
+    ----------
+    state : RepoConvoState
+        The current workflow state.
     """
     query = state['messages'][-1]
 
@@ -96,11 +101,10 @@ async def final_answer(state: RepoConvoState):
     """
     Generates final answer using the AI model.
 
-    Parameters:
-        state (RepoConvoState): The current workflow state.
-
-    Returns:
-        RepoConvoState: Updated state with the AI-generated response
+    Parameters
+    ----------
+    state : RepoConvoState
+        The current workflow state.
     """
     prompt = state['prompt']
     response = await chat_llm.ainvoke(prompt)

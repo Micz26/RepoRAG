@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 async def chatbot(state: RepoConvoState):
     """
-    Invokes LLM.
+    Invokes query_extraction chain for retrieval routing.
 
     Parameters
     ----------
@@ -71,7 +71,7 @@ async def retrieve_data(state: RepoConvoState):
 
 
 async def fill_template(state: RepoConvoState):
-    """_summary_
+    """
     Formats the retrieved data into a structured AI prompt.
 
     Parameters

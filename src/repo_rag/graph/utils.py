@@ -5,7 +5,6 @@ from langchain_core.documents import Document
 
 from repo_rag.components.prompts import (
     GENERAL_PROMPT_TEMPLATE,
-    RETRIEVAL_INSTRUCTION_PROMPT,
     SYSTEM_PROMPT,
 )
 from repo_rag.graph.state import RepoConvoState
@@ -37,7 +36,7 @@ def print_messages(messages):
         print(message.pretty_print())
 
 
-def format_prompt(query, history=None, retrieved_context: str = '', retrieved_sources: str = ''):
+def format_prompt(query, history=None, retrieved_context: str = '', retrieved_sources: str = '') -> ChatPromptTemplate:
     """
     Returns formatted messages (not a template) using the inputs.
 
@@ -54,8 +53,8 @@ def format_prompt(query, history=None, retrieved_context: str = '', retrieved_so
 
     Returns
     -------
-    list of BaseMessage
-        A list of formatted chat messages.
+    ChatPromptTemplate
+        A formated prompt for chatbot.
     """
     if history is None:
         history = [BaseMessage(content='')]
@@ -67,12 +66,7 @@ def format_prompt(query, history=None, retrieved_context: str = '', retrieved_so
 
     messages = []
 
-    if retrieved_context.strip():
-        messages.append(
-            SystemMessagePromptTemplate.from_template(SYSTEM_PROMPT)
-        )  # Dont include RETRIEVAL_INSTRUCTION_PROMPT again if
-    else:
-        messages.append(SystemMessagePromptTemplate.from_template(SYSTEM_PROMPT + '\n' + RETRIEVAL_INSTRUCTION_PROMPT))
+    messages.append(SystemMessagePromptTemplate.from_template(SYSTEM_PROMPT))
 
     messages.extend(history)
     messages.append(human_template)

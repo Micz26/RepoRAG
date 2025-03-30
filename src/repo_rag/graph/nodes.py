@@ -5,6 +5,7 @@ from langgraph.graph import END
 
 from repo_rag.components.retrievers import retriever
 from repo_rag.components.llms import chat_llm
+from repo_rag.components.chains import query_extraction_chain
 from repo_rag.components.prompts import route_to_retriever_placeholder
 from repo_rag.graph.state import RepoConvoState
 from repo_rag.graph.utils import format_prompt, format_docs
@@ -23,8 +24,7 @@ async def chatbot(state: RepoConvoState):
         The current workflow state.
     """
     query = state['messages'][-1]
-    prompt = format_prompt(query=query, history=state['messages'][:-1])
-    response = await chat_llm.ainvoke(prompt)
+    response = await query_extraction_chain.ainvoke(query)
 
     logging.info(f'Retriever usage: {response.content}')
 
@@ -35,7 +35,7 @@ async def chatbot(state: RepoConvoState):
 
         return {**state, 'retrieving_query': query + ' ' + response.content, 'should_retrieve': True}
     else:
-        return {**state, 'messages': [response.content], 'should_retrieve': False}
+        return {**state, 'should_retrieve': False}
 
 
 async def route_retriever(state: RepoConvoState):
@@ -51,7 +51,7 @@ async def route_retriever(state: RepoConvoState):
     if should_retrieve:
         return 'retrieve_data'
     else:
-        return END
+        return 'fill_template'
 
 
 async def retrieve_data(state: RepoConvoState):
@@ -81,7 +81,7 @@ async def fill_template(state: RepoConvoState):
     """
     query = state['messages'][-1]
 
-    retrieved_content = ''
+    retrieved_content, retrieved_sources = '', ''
 
     if state['should_retrieve']:
         retrieved_docs = state['retrieved_docs']

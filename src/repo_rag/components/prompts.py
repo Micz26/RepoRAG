@@ -42,38 +42,30 @@ Extract if the query mentions **specific** repository elements, such as:
 - Dependencies or configuration files  
 - Documentation (e.g., License, Privacy Policy)  
 
+## When **Not** to Retrieve
+- The query is unrelated to the repository specific elements.  
+
 ## How to Extract & Format Output  
 1. Identify relevant terms from the query (e.g., function names, class names).  
 2. Return them as a **comma-separated** list, followed by `{route_to_retriever_placeholder}`.  
 3. **DO NOT** include any additional text.  
 
 ### **Examples:**  
-#### Valid Retrieval Queries
 - **Query:** How does the SelectDisplay component handle the device options when retrieving display IDs  
   **Output:** `SelectDisplay, device_options, display_IDs {route_to_retriever_placeholder}`  
 
 - **Query:** What does the `format_prompt()` function from `utils` do, and what is the purpose of `SystemMessagePromptTemplate` in this function?  
-  **Output:** `format_prompt, SystemMessagePromptTemplate {route_to_retriever_placeholder}`  
+  **Output:** `format_prompt, SystemMessagePromptTemplate {route_to_retriever_placeholder}`   
 
-## When **Not** to Retrieve
-- The query is about **general programming concepts** unrelated to the repository.  
-- The query is a **simple follow-up** to already retrieved information.  
-- The user asks for **speculative or opinion-based** information not found in the repository.  
 """
 
-RETRIEVAL_INSTRUCTION_PROMPT = (
-    QUERY_EXTRACTION_SYSTEM_PROMPT
-    + """
-## Alternative Action
-If retrieval is **not needed**, answer using your own knowledge.
-"""
-)
 
 GENERAL_PROMPT_TEMPLATE = """
 Retrieved context: {retrieved_context}
 Retrieved sources: {retrieved_sources}
 
 If there is any context provide user with sources of the context icncluding file names anf full urls to the files.
+If there isnt any context, simply answer the question.
 
 Query: {query}
 """

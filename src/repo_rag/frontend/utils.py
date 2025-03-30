@@ -32,7 +32,7 @@ def add_to_vector_store(repo_url: str) -> None:
     total_batches = len(documents) // batch_size + (1 if len(documents) % batch_size != 0 else 0)
 
     st.write(
-        f'Processing repository, adding documents to vector store, estimated time {int(total_batches*1.3)} minutes...'
+        f'Processing repository, adding documents to vector store, estimated time {int(total_batches * 1.3)} minutes...'
     )
 
     store.add_docs(docs=documents, batch_size=batch_size)

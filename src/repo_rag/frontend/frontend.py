@@ -3,7 +3,6 @@ import asyncio
 import streamlit as st
 
 from repo_rag.graph.graph import create_workflow
-from repo_rag.graph.utils import run_graph
 from repo_rag.frontend.utils import add_to_vector_store
 
 
@@ -37,13 +36,29 @@ def ui():
     elif 'go_to_chatbot' in st.session_state and st.session_state['go_to_chatbot']:
         st.header('Chat with Repo Rag Assistant')
 
-        graph = create_workflow()
+        if 'graph' not in st.session_state:
+            st.session_state['graph'] = None
+
+        if 'messages' not in st.session_state:
+            st.session_state['messages'] = []
+
+        if not st.session_state['graph']:
+            graph = create_workflow()
+            st.session_state['graph'] = graph
+
         thread_id = '1'
 
         user_input = st.text_input('Ask question about repository:', '')
 
         if user_input:
-            result = asyncio.run(run_graph(graph, user_input, thread_id))
+            session_graph = st.session_state['graph']
+            result = asyncio.run(
+                session_graph.ainvoke(
+                    {'messages': user_input},
+                    config={'configurable': {'thread_id': thread_id}},
+                )
+            )
+            st.session_state['graph'] = session_graph
             chat_response = result['messages'][-1].content
 
             st.session_state['messages'].append({'role': 'user', 'content': user_input})

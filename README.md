@@ -50,7 +50,7 @@ I tested multiple models to evaluate their performance in retrieving relevant co
 | Model with CrossEncoder Reranker      | 0.57      | 5.76                   |
 | Model with Listwise Reranker          | 0.54      | 93.89                  |
 
-The evaluation highlights the trade-offs between retrieval quality (**Recall@10**) and computational cost (**Mean Latency**). However, latency might vary depending on OpeanAi API response times or internet connection stability. Therefore, additional testing is recommended to get more reliable results. Also it's important to highlight that the **Recall@10** results may not be fully reliable depending on whether the test data is representative.
+The evaluation highlights the trade-offs between retrieval quality (**Recall@10**) and computational cost (**Mean Latency**). However, latency might vary depending on OpeanAi API response times or internet connection stability. Therefore, additional testing is recommended to get more reliable results. Also it's important to highlight that the **Recall@10** results may not be fully reliable depending on whether the test data is representative. Models with query extraction or query expansion generate additional tokens, but query extraction typically generates only small amount of output tokens as it just extracts key terms.
 
 - **Best Performance (Query Extraction)**
 
@@ -210,8 +210,6 @@ If you want to set up project locally
    ```
    python scripts/query_extraction.py
    ```
-
-After these steps project scripts are ready to launch
 
 ### Launching
 
